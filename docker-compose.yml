@@ -1,0 +1,56 @@
+# -version: '4.15'
+services:
+  dev-pg-db:
+    image: postgres:15
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: pracharya-dev-db-user
+      POSTGRES_PASSWORD: qpwoeiruty
+      POSTGRES_DB: pracharya-dev-db
+    networks:
+      - data-dimension
+
+  test-pg-db:
+    image: postgres:15
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: pracharya-test-db-user
+      POSTGRES_PASSWORD: qpwoeiruty
+      POSTGRES_DB: pracharya-test-db
+    networks:
+      - data-dimension
+    
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
+  # dev-redis-db:
+  #   image: redis:7.2-rc1
+  #   restart: always
+  #   ports:
+  #     - '6379:6379'
+  #   command: redis-server --save 20 1 --loglevel debug --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  #   volumes: 
+  #     - cache:/data
+
+
+  # test-redis-db:
+  #   image: redis:7.2-rc1
+  #   restart: always
+  #   ports:
+  #     - '6379:6379'
+  #   command: redis-server --save 20 1 --loglevel debug --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  #   volumes: 
+  #     - cache:/data
+
+
+networks:
+  data-dimension:
+
+volumes:
+  cache:
+    driver: local

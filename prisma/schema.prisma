@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  misidn          String?  @unique
+  email           String?  @unique
+  role            Role     @default(USER)
+  email_verified  Boolean  @default(false)
+  misidn_verified Boolean  @default(false)
+  disabled        Boolean  @default(false)
+  deleted         Boolean  @default(false)
+  del_user_info   Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  profile         Profile?
+}
+
+model Profile {
+  id            Int        @id @default(autoincrement())
+  firstname     String?
+  middlename    String?
+  lastname      String?
+  prefered_cats Int[]
+  avatar        String     @default("https://res.cloudinary.com/ddqyll9ug/image/upload/v1687169464/avatarAsset_1_fqp1pi.png")
+  del_user_info Json?
+  userId        Int        @unique
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author        Thread[]
+  bookmark      Bookmark[]
+  like          Like[]
+  comment       Comment[]
+}
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String
+  iconname String
+  thread   Thread[]
+
+  // @@map("Thread")
+}
+
+model Thread {
+  id         Int        @id @default(autoincrement())
+  title      String
+  content    String
+  archived   Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  creatorid  Int
+  creator    Profile    @relation(fields: [creatorid], references: [id], onDelete: Cascade)
+  categoryId Int
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bookmark   Bookmark[]
+  like       Like[]
+  comment    Comment[]
+
+  // @@map("Category")
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  profileid Int
+  profile   Profile  @relation(fields: [profileid], references: [id], onDelete: Cascade)
+  threadid  Int
+  thread    Thread   @relation(fields: [threadid], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  profileid Int
+  profile   Profile  @relation(fields: [profileid], references: [id], onDelete: Cascade)
+  threadid  Int
+  thread    Thread   @relation(fields: [threadid], references: [id], onDelete: Cascade)
+
+  @@unique([profileid, threadid])
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  parentid  Int?
+  parent    Comment?  @relation("comment-parent-child", fields: [parentid], references: [id], onDelete: Cascade)
+  child     Comment[] @relation("comment-parent-child")
+  profileid Int
+  profile   Profile   @relation(fields: [profileid], references: [id], onDelete: Cascade)
+  threadid  Int
+  thread    Thread    @relation(fields: [threadid], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
