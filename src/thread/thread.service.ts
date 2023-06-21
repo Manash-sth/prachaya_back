@@ -26,9 +26,11 @@ export class ThreadService {
                         select: {
                             firstname: true,
                             middlename: true,
-                            lastname: true
+                            lastname: true,
+                            avatar: true
                         }
                     },
+                    categoryId: true,
                     _count: {
                         select: {
                             like: true,
@@ -46,7 +48,7 @@ export class ThreadService {
 
     async get_thread(id:object){
         try{
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
             const thread = await this.prismaservice.thread.findFirst({
                 where:{
                     id: thread_id
@@ -61,9 +63,11 @@ export class ThreadService {
                         select: {
                             firstname: true,
                             middlename: true,
-                            lastname: true
+                            lastname: true,
+                            avatar: true
                         }
                     },
+                    categoryId: true,
                     _count: {
                         select: {
                             like: true,
@@ -81,7 +85,7 @@ export class ThreadService {
 
     async get_thread_category(cat_id: number){
         try{
-            const category_id = Number(cat_id['id'])
+            const category_id = Number(cat_id['category_id'])
             const thread = await this.prismaservice.category.findUnique({
                 where:{
                     id: category_id
@@ -100,9 +104,11 @@ export class ThreadService {
                                 select: {
                                     firstname: true,
                                     middlename: true,
-                                    lastname: true
+                                    lastname: true,
+                                    avatar: true
                                 }
                             },
+                            categoryId: true,
                             _count: {
                                 select: {
                                     like: true,

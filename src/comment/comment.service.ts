@@ -9,7 +9,7 @@ export class CommentService {
     async add_comment(body:CommentDTO, id:object, jwt_info:object){
         try{
             const profile_id = Number(jwt_info['sub'])
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
             const comment = await this.prismaservice.comment.create({
                 data:{
                     content: body.content,
@@ -31,7 +31,7 @@ export class CommentService {
 
     async get_comment(id:object){
         try{
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
 
             const comment = await this.prismaservice.comment.findMany({
                 where:{
@@ -59,7 +59,7 @@ export class CommentService {
 
     async get_child_comment(id:object){
         try{
-            const comment_id = Number(id['id'])
+            const comment_id = Number(id['comment_id'])
 
             const comment = await this.prismaservice.comment.findFirst({
                 where:{
@@ -90,7 +90,7 @@ export class CommentService {
 
     async delete_comment(id: object){
         try{
-            const comment_id = Number(id['id'])
+            const comment_id = Number(id['comment_id'])
             const comment = await this.prismaservice.comment.delete({
                 where:{
                     id: comment_id

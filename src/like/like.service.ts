@@ -10,7 +10,7 @@ export class LikeService {
     async add_like(id: object, jwt_info:object){
         try{
             const profile_id = Number(jwt_info['sub'])
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
             const like = await this.prismaservice.like.create({
                 data:{
                     profileid: profile_id,
@@ -47,7 +47,7 @@ export class LikeService {
     async remove_like(id: object, jwt_info:object){
         try{
             const profile_id = Number(jwt_info['sub'])
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
             const like = await this.prismaservice.like.delete({
                 where: {
                     profileid_threadid: {
@@ -73,7 +73,7 @@ export class LikeService {
     // TODO: Change getting count by counting like from thread table
     async get_like_count(id:object){
         try{
-            const thread_id = Number(id['id'])
+            const thread_id = Number(id['thread_id'])
             const like = await this.prismaservice.like.count({
                 where:{
                     threadid: thread_id

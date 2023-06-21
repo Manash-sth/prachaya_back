@@ -33,7 +33,7 @@ export class ThreadController {
         type: GetThreadResponseDTO
         })
     @ApiResponse({ status: 400, description: 'Bad Request'})
-    @UseGuards(JWTAccessGuard)
+    // @UseGuards(JWTAccessGuard)
     @HttpCode(HttpStatus.OK)
     @Get('get_thread/:thread_id')
     get_thread(@Param() thread_id: any){
@@ -46,7 +46,7 @@ export class ThreadController {
         type: GetThreadCategoryesponseDTO
         })
     @ApiResponse({ status: 400, description: 'Bad Request'})
-    @UseGuards(JWTAccessGuard)
+    // @UseGuards(JWTAccessGuard)
     @HttpCode(HttpStatus.OK)
     @Get('get_thread_category/:category_id')
     get_thread_category(@Param() category_id: any){

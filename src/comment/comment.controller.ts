@@ -33,7 +33,7 @@ export class CommentController {
         type: GetCommentResponseDTO
         })
     @ApiResponse({ status: 400, description: 'Bad Request'})
-    @UseGuards(JWTAccessGuard)
+    // @UseGuards(JWTAccessGuard)
     @HttpCode(HttpStatus.OK)
     @Get('get_comment/:thread_id')
     get_comment(@Param() thread_id:any){
@@ -46,7 +46,7 @@ export class CommentController {
         type: GetChildCommentResponseDTO
         })
     @ApiResponse({ status: 400, description: 'Bad Request'})
-    @UseGuards(JWTAccessGuard)
+    // @UseGuards(JWTAccessGuard)
     @HttpCode(HttpStatus.OK)
     @Get('get_child_comment/:comment_id')
     get_child_comment(@Param() comment_id:any){
