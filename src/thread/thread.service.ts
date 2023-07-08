@@ -128,4 +128,41 @@ export class ThreadService {
             throw new HttpException('Error fetching threads by category', HttpStatus.BAD_REQUEST)
         }
     }
+
+    // Temporary
+    async get_thread_all(){
+        try{
+            const thread = await this.prismaservice.thread.findMany({
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    createdAt: true,
+                    creatorid: true,
+                    creator: {
+                        select: {
+                            firstname: true,
+                            middlename: true,
+                            lastname: true,
+                            avatar: true
+                        }
+                    },
+                    categoryId: true,
+                    _count: {
+                        select: {
+                            like: true,
+                            comment: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+            return(thread)
+        } catch(err){
+            console.log(err)
+            throw new HttpException('Error fetching threads by category', HttpStatus.BAD_REQUEST)
+        }
+    }
 }

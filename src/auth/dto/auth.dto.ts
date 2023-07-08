@@ -36,3 +36,25 @@ export class LoginDTO{
     @IsNotEmpty()
     mobile_number: string
 }
+
+export class PreDTO{
+    @ApiProperty()
+    @IsMobilePhone("ne-NP")
+    @IsNotEmpty()
+    mobile_number: string
+}
+
+export class SmsVerifyDTO{
+    @ApiProperty()
+    @IsMobilePhone("ne-NP")
+    @IsNotEmpty()
+    mobile_number: string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    code: string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    type: string
+}

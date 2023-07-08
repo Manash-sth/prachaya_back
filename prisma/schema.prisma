@@ -17,6 +17,7 @@ model User {
   role            Role     @default(USER)
   email_verified  Boolean  @default(false)
   misidn_verified Boolean  @default(false)
+  sms_secret      String?
   disabled        Boolean  @default(false)
   deleted         Boolean  @default(false)
   del_user_info   Json?
@@ -100,6 +101,15 @@ model Comment {
   profile   Profile   @relation(fields: [profileid], references: [id], onDelete: Cascade)
   threadid  Int
   thread    Thread    @relation(fields: [threadid], references: [id], onDelete: Cascade)
+}
+
+model Pre_register {
+  id        Int      @id @default(autoincrement())
+  misidn    String?  @unique
+  code      String
+  verified  Boolean  @default(false)
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
 }
 
 enum Role {
