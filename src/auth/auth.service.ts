@@ -49,7 +49,8 @@ export class AuthService {
         return{
                 "msg": "sms sent",
                 "user_exists": false,
-                "type": "signup"
+                "type": "signup",
+                "code": send_sms
             }
     }
 
