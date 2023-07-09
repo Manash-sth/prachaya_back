@@ -12,46 +12,66 @@ export class AuthService {
     constructor(private prismaservice: PrismaService, private jwt:JwtService, private config:ConfigService){}
 
     async phone_number_verification(body: PreDTO){
-        const existing_number = await this.prismaservice.user.findFirst({
-            where: {
-                misidn: body.mobile_number
-            }
-        })
-        
-        if(existing_number){
-            const send_sms:string = await this.send_sms(existing_number.misidn)
-            console.log(send_sms)
-            this.prismaservice.user.update({
+        try{
+            const existing_number = await this.prismaservice.user.findFirst({
                 where: {
-                    id: existing_number.id
-                },
-                data: {
-                    sms_secret: send_sms
+                    misidn: body.mobile_number
                 }
             })
+            
+            if(existing_number){
+                const send_sms:string = await this.send_sms(existing_number.misidn)
+                console.log(send_sms)
+                this.prismaservice.user.update({
+                    where: {
+                        id: existing_number.id
+                    },
+                    data: {
+                        sms_secret: send_sms
+                    }
+                })
+                return{
+                    "msg": "sms sent",
+                    "user_exists": true,
+                    "type": "login",
+                    "code": send_sms            // TODO: Remove this
+                }
+            }
+
+            const user_preregistered = await this.prismaservice.pre_register.findFirst({
+                where: {
+                    misidn: body.mobile_number
+                }
+            })
+
+            if(user_preregistered){
+                await this.prismaservice.pre_register.delete({
+                    where: {
+                        misidn: body.mobile_number
+                    }
+                })
+            }
+    
+            const send_sms = await this.send_sms(body.mobile_number)
+    
+            const new_user = await this.prismaservice.pre_register.create({
+                data: {
+                    misidn: body.mobile_number,
+                    code: send_sms
+                }
+            })
+    
             return{
-                "msg": "sms sent",
-                "user_exists": true,
-                "type": "login",
-                "code": send_sms            // TODO: Remove this
-            }
+                    "msg": "sms sent",
+                    "user_exists": false,
+                    "type": "signup",
+                    "code": send_sms
+                }
         }
-
-        const send_sms = await this.send_sms(body.mobile_number)
-
-        const new_user = await this.prismaservice.pre_register.create({
-            data: {
-                misidn: body.mobile_number,
-                code: send_sms
-            }
-        })
-
-        return{
-                "msg": "sms sent",
-                "user_exists": false,
-                "type": "signup",
-                "code": send_sms
-            }
+        catch(err){
+            console.log(err)
+            throw new HttpException('Error verifying number', HttpStatus.BAD_REQUEST)
+        }
     }
 
     async verify_sms_code(body: SmsVerifyDTO){
