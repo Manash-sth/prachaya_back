@@ -52,4 +52,10 @@ export class ThreadController {
     get_thread_category(@Param() category_id: any){
         return this.threadservice.get_thread_category(category_id)
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('get_all_thread')
+    get_thread_all(@Param() category_id: any){
+        return this.threadservice.get_thread_all()
+    }
 }

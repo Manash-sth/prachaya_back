@@ -22,7 +22,7 @@ export class AuthService {
             if(existing_number){
                 const send_sms:string = await this.send_sms(existing_number.misidn)
                 console.log(send_sms)
-                this.prismaservice.user.update({
+                await this.prismaservice.user.update({
                     where: {
                         id: existing_number.id
                     },
