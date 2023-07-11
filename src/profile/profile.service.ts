@@ -17,6 +17,7 @@ export class ProfileService {
                     firstname: true,
                     middlename: true,
                     lastname: true,
+                    avatar: true,
                     user: {
                         select: {
                             misidn: true,
