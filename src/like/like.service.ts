@@ -74,14 +74,15 @@ export class LikeService {
     async get_like_count(id:object){
         try{
             const thread_id = Number(id['thread_id'])
-            const like = await this.prismaservice.like.count({
+            const like = await this.prismaservice.like.findMany({
                 where:{
                     threadid: thread_id
+                },
+                select: {
+                    profileid: true
                 }
             })
-            return({
-                "like_count": like
-            })
+            return like
         } catch{
             throw new HttpException('Error fetching like count', HttpStatus.BAD_REQUEST)
         }

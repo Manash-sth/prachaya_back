@@ -31,6 +31,11 @@ export class ThreadService {
                         }
                     },
                     categoryId: true,
+                    like: {
+                        select: {
+                            profileid: true
+                        }
+                    },
                     _count: {
                         select: {
                             like: true,
@@ -65,6 +70,11 @@ export class ThreadService {
                             middlename: true,
                             lastname: true,
                             avatar: true
+                        }
+                    },
+                    like: {
+                        select: {
+                            profileid: true
                         }
                     },
                     categoryId: true,
@@ -108,6 +118,11 @@ export class ThreadService {
                                     avatar: true
                                 }
                             },
+                            like: {
+                                select: {
+                                    profileid: true
+                                }
+                            },
                             categoryId: true,
                             _count: {
                                 select: {
@@ -145,6 +160,11 @@ export class ThreadService {
                             middlename: true,
                             lastname: true,
                             avatar: true
+                        }
+                    },
+                    like: {
+                        select: {
+                            profileid: true
                         }
                     },
                     categoryId: true,

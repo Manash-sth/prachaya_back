@@ -41,6 +41,14 @@ export class CommentService {
                 select: {
                     id: true,
                     content: true,
+                    profile: {
+                        select: {
+                            firstname: true,
+                            middlename: true,
+                            lastname: true,
+                            avatar: true,
+                        }
+                    },
                     _count:{
                         select:{
                             child: true
