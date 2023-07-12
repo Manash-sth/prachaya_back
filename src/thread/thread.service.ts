@@ -20,6 +20,7 @@ export class ThreadService {
                     id: true,
                     title: true,
                     content: true,
+                    verified: true,
                     createdAt: true,
                     creatorid: true,
                     creator: {
@@ -62,6 +63,7 @@ export class ThreadService {
                     id: true,
                     title: true,
                     content: true,
+                    verified: true,
                     createdAt: true,
                     creatorid: true,
                     creator: {
@@ -98,7 +100,7 @@ export class ThreadService {
             const category_id = Number(cat_id['category_id'])
             const thread = await this.prismaservice.category.findUnique({
                 where:{
-                    id: category_id
+                    id: category_id,
                 },
                 select: {
                     thread: {
@@ -108,6 +110,7 @@ export class ThreadService {
                             id: true,
                             title: true,
                             content: true,
+                            verified: true,
                             createdAt: true,
                             creatorid: true,
                             creator: {
@@ -154,6 +157,7 @@ export class ThreadService {
                     content: true,
                     createdAt: true,
                     creatorid: true,
+                    verified: true,
                     creator: {
                         select: {
                             firstname: true,
