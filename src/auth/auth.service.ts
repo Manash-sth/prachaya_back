@@ -80,12 +80,26 @@ export class AuthService {
                 misidn: body.mobile_number
             }
         })
-
+        
         if(!pre_register && body.type==='login'){
-            const login = this.login(body.mobile_number)
-            return login
+            const sms_code = await this.prismaservice.user.findUnique({
+                where: {
+                    misidn: body.mobile_number
+                },
+                select:{
+                    sms_secret: true
+                }
+            })
+            if (sms_code.sms_secret == body.code){
+                const login = this.login(body.mobile_number)
+                return login
+            }else{
+                return {
+                    msg: "verification failed"
+                }
+            }
         }
-
+        
         await this.prismaservice.pre_register.update({
             where: {
                 misidn: pre_register.misidn
@@ -148,7 +162,8 @@ export class AuthService {
             const user = await this.prismaservice.user.create({
                 data:{
                     email: body.email,
-                    misidn: body.mobile_number
+                    misidn: body.mobile_number,
+                    misidn_verified: true
                 },
             })
 

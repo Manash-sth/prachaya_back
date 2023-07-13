@@ -57,7 +57,8 @@ export class ThreadService {
             const thread_id = Number(id['thread_id'])
             const thread = await this.prismaservice.thread.findFirst({
                 where:{
-                    id: thread_id
+                    id: thread_id,
+                    verified: true
                 },
                 select: {
                     id: true,
@@ -104,6 +105,9 @@ export class ThreadService {
                 },
                 select: {
                     thread: {
+                        where:{
+                            verified: true
+                        },
                         // skip:1,
                         // take:2,
                         select: {
@@ -151,6 +155,9 @@ export class ThreadService {
     async get_thread_all(){
         try{
             const thread = await this.prismaservice.thread.findMany({
+                where:{
+                    verified: true
+                },
                 select: {
                     id: true,
                     title: true,
@@ -187,6 +194,91 @@ export class ThreadService {
         } catch(err){
             console.log(err)
             throw new HttpException('Error fetching threads by category', HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async verify_thread(id:number, jwt_info:object){
+        try{
+            const thread_id = Number(id['id'])
+            const adm_role = jwt_info['role']
+    
+            console.log(adm_role)
+    
+            if (adm_role === 'ADMIN'){
+                const thread = await this.prismaservice.thread.update({
+                    where:{
+                        id: thread_id
+                    },
+                    data:{
+                        verified: true
+                    }
+                })
+                return({
+                    msg: "thread verified"
+                })
+            }
+
+            return({
+                msg: "thread verification failed"
+            })
+
+        }catch(err){
+            console.log(err)
+            throw new HttpException('Error verifying thread', HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async get_unverified_thread(jwt_info:object){
+        try{
+            const adm_role = jwt_info['role']
+    
+            if (adm_role === 'ADMIN'){
+                const thread = await this.prismaservice.thread.findMany({
+                    where:{
+                        verified: false
+                    },
+                    select: {
+                        id: true,
+                        title: true,
+                        content: true,
+                        createdAt: true,
+                        creatorid: true,
+                        verified: true,
+                        creator: {
+                            select: {
+                                firstname: true,
+                                middlename: true,
+                                lastname: true,
+                                avatar: true
+                            }
+                        },
+                        like: {
+                            select: {
+                                profileid: true
+                            }
+                        },
+                        categoryId: true,
+                        _count: {
+                            select: {
+                                like: true,
+                                comment: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
+                    }
+                })
+                return thread
+            }
+
+            return({
+                msg: "not an admin"
+            })
+
+        }catch(err){
+            console.log(err)
+            throw new HttpException('Error fetchinf unverified thread', HttpStatus.BAD_REQUEST)
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, Param, UseGuards, Req, Patch } from '@nestjs/common';
 import { ThreadService } from './thread.service';
 import { ThreadDTO, NewThreadResponseDTO, GetThreadResponseDTO, GetThreadCategoryesponseDTO } from './dto';
 import { JWTAccessGuard } from 'src/auth/guard';
@@ -57,5 +57,19 @@ export class ThreadController {
     @Get('get_all_thread')
     get_thread_all(@Param() category_id: any){
         return this.threadservice.get_thread_all()
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Patch('verify_thread/:id')
+    @UseGuards(JWTAccessGuard)
+    verify_thread(@Param() id: any, @Req() req:Request){
+        return this.threadservice.verify_thread(id, req.user)
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('get_unverified_thread')
+    @UseGuards(JWTAccessGuard)
+    get_unverified_thread(@Req() req:Request){
+        return this.threadservice.get_unverified_thread(req.user)
     }
 }

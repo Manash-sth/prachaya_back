@@ -23,7 +23,8 @@ export class ProfileService {
                             misidn: true,
                             misidn_verified: true,
                             email: true,
-                            email_verified: true
+                            email_verified: true,
+                            role: true
                         }
                     },
                     _count: {
