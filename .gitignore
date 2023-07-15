@@ -37,3 +37,4 @@ lerna-debug.log*
 # Env Vars
 .env
 /pgdata
+/upload

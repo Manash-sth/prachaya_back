@@ -52,6 +52,13 @@ export class BookmarkService {
                         id: true,
                         title: true,
                         archived: true,
+                        content: true,
+                        category: true,
+                        like: {
+                            select: {
+                                id: true
+                            }
+                        },
                         _count: {
                             select: {
                                 like: true,

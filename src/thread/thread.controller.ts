@@ -2,7 +2,7 @@ import { Controller, Post, Get, Body, HttpCode, HttpStatus, Param, UseGuards, Re
 import { ThreadService } from './thread.service';
 import { ThreadDTO, NewThreadResponseDTO, GetThreadResponseDTO, GetThreadCategoryesponseDTO } from './dto';
 import { JWTAccessGuard } from 'src/auth/guard';
-import { Request } from 'express';
+import { Request, Express } from 'express';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Thread')

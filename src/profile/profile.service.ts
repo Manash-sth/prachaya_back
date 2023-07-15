@@ -1,9 +1,19 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ProfileDTO } from './dto/profile.dto';
+import { v2 as cloudinary } from 'cloudinary';
+import { unlink } from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProfileService {
-    constructor(private prismaservice: PrismaService){}
+    constructor(private prismaservice: PrismaService, config: ConfigService){
+        cloudinary.config({
+            cloud_name: config.get('CLOUD_NAME'),
+            api_key: config.get('API_KEY'),
+            api_secret: config.get('API_SECRET')
+        });
+    }
 
     async get_my_profile(jwt_info:object){
         try{
@@ -14,6 +24,7 @@ export class ProfileService {
                     id: profile_id
                 },
                 select: {
+                    id: true,
                     firstname: true,
                     middlename: true,
                     lastname: true,
@@ -155,7 +166,52 @@ export class ProfileService {
             console.log(err)
             throw new HttpException('Error while deleting profile', HttpStatus.BAD_REQUEST)
         }
+    }
 
+    async update_profile(body: ProfileDTO, id:object){
+        let data:object = body          
+        const profile_id = Number(id['sub'])
+        try{
+            const profile = await this.prismaservice.profile.update({
+                where:{
+                    id: profile_id
+                },
+                data
+            })
+            return({
+                msg: "profile info updated"
+            })
 
+        }catch(err){
+            console.log(err)
+            throw new HttpException('Error updateing profile ingormation', HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async update_avatar(file: object, id: object){
+        const profile_id = Number(id['sub'])
+        let url = ""
+        let public_id = ""
+        const tempPath = file['path']
+        await cloudinary.uploader.upload(tempPath,
+                        async function(error, result) {
+                            url = result.url
+                            public_id = result.public_id
+                            unlink(tempPath, (err) => {
+                                if (err) throw err;
+                            });
+                        });
+        const profile = await this.prismaservice.profile.update({
+            where: {
+                id: profile_id
+            },
+            data: {
+                avatar: url
+            }
+        })
+        return({
+            msg: "avatar updated",
+            url
+        })
     }
 }
